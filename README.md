@@ -1,8 +1,8 @@
 # Zappy – Declarative Mock Data for Kotlin
 
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.9%2B-blue.svg)](https://kotlinlang.org)
-[![KSP](https://img.shields.io/badge/KSP-1.9.20--1.0.14-orange.svg)](https://github.com/google/ksp)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.21-blue.svg)](https://kotlinlang.org)
+[![KSP](https://img.shields.io/badge/KSP-2.3.0-orange.svg)](https://github.com/google/ksp)
 
 ---
 
