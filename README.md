@@ -59,8 +59,8 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.mtctx.zappy:zappy-core:1.0.0")
-    ksp("dev.mtctx.zappy:zappy-processor:1.0.0")
+    implementation("dev.mtctx.library:zappy-core:1.0.0")
+    ksp("dev.mtctx.library:zappy-processor:1.0.0")
 }
 ```
 
