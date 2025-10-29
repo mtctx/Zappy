@@ -3,6 +3,8 @@
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.2.21-blue.svg)](https://kotlinlang.org)
 [![KSP](https://img.shields.io/badge/KSP-2.3.0-orange.svg)](https://github.com/google/ksp)
+[![Maven Central Core](https://img.shields.io/maven-central/v/dev.mtctx.library/zappy-core?label=Maven%20Central%20Core)](https://central.sonatype.com/artifact/dev.mtctx.library/zappy-core)
+[![Maven Central Processor](https://img.shields.io/maven-central/v/dev.mtctx.library/zappy-processor?label=Maven%20Central%20Processor)](https://central.sonatype.com/artifact/dev.mtctx.library/zappy-processor)
 
 ---
 
@@ -175,18 +177,18 @@ println(email) // → "a1b2c@example.com"
 
 ## Built-in ZPL Providers
 
-| ID               | Example Output                         |
-|------------------|----------------------------------------|
-| `<name>`         | `k9PxM2vN`                             |
-| `<email>`        | `Bc34QQ6grdHQ0ozz@2noJRHYKqklOFZ.com`  |
-| `<domain>`       | `aa2fa5.net`                           |
-| `<numeric>`      | `42`                                   |
-| `<password>`     | `e*<PyXvp]B`                           |
-| `<token>`        | `YWEeWGC3Fd4Fk-H`                      |
-| `<uuid>`         | `f47ac10b-58cc-4372-a567-0e02b2c3d479` |
-| `<iso-date>`     | `2025-10-29T14:30:22Z`                 |
-| `<phone-number>` | `+1017079879685250`                    |
-| `<url>`          | `http://2ikEu.io`                      |
+| ID                       | Example Output                         |
+|--------------------------|----------------------------------------|
+| `<name>`                 | `k9PxM2vN`                             |
+| `<email>`                | `Bc34QQ6grdHQ0ozz@2noJRHYKqklOFZ.com`  |
+| `<domain>`               | `aa2fa5.net`                           |
+| `<numeric>`              | `42`                                   |
+| `<password>`             | `e*<PyXvp]B`                           |
+| `<token>`                | `YWEeWGC3Fd4Fk-H`                      |
+| `<uuid>`                 | `f47ac10b-58cc-4372-a567-0e02b2c3d479` |
+| `<iso-date> (Base Only)` | `2025-10-29T14:30:22Z`                 |
+| `<phone-number>`         | `+1017079879685250`                    |
+| `<url>`                  | `http://2ikEu.io`                      |
 
 > **Note**: `<iso-date>` requires a custom provider. See [Custom ZPLProvider](#how-to-create-a-custom-zplprovider).
 
