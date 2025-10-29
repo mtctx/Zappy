@@ -19,6 +19,6 @@ package dev.mtctx.zappy.zpl.builtin
 import dev.mtctx.zappy.zpl.ZPLProvider
 
 object NameZPLProvider : ZPLProvider() {
-    override val id: String = "username"
+    override val id: String = "name"
     override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf('-', '_')
 }

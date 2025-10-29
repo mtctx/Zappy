@@ -14,4 +14,4 @@
 # SPDX-License-Identifier: GPL-3.0-only
 #
 
-dev.mtctx.zappy.MockProcessorProvider
+dev.mtctx.zappy.processor.MockProcessorProvider

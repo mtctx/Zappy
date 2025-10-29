@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-package dev.mtctx.zappy
+package dev.mtctx.zappy.processor
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration

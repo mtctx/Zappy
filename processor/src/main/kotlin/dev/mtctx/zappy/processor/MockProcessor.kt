@@ -15,7 +15,7 @@
  */
 @file:Suppress("Unused")
 
-package dev.mtctx.zappy
+package dev.mtctx.zappy.processor
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated

@@ -24,4 +24,6 @@ object PasswordZPLProvider : ZPLProvider() {
         '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '+', '=', '{', '}',
         '[', ']', '|', '\\', ':', ';', '\'', '"', '<', '>', ',', '.', '?', '/', '_'
     )
+
+    override val defaultMinLength: Int = 8
 }

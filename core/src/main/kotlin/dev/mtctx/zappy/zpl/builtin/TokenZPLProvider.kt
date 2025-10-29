@@ -21,5 +21,7 @@ import dev.mtctx.zappy.zpl.ZPLProvider
 object TokenZPLProvider : ZPLProvider() {
     override val id: String = "token"
     override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf('-', '_', '=')
-    override val defaultMinLength: Int = 20
+
+    override val defaultMinLength: Int = 12
+    override val defaultMaxLength: Int = 36
 }

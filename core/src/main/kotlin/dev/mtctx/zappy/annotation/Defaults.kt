@@ -16,7 +16,7 @@
 
 package dev.mtctx.zappy.annotation
 
-const val DEFAULT_ZPL_NAME: String = "<username>"
+const val DEFAULT_ZPL_NAME: String = "<name>"
 const val DEFAULT_ZPL_NUMERIC: String = "<numeric>"
 const val DEFAULT_ZPL_DOMAIN: String = "<domain>"
 const val DEFAULT_ZPL_EMAIL: String = "<email>"

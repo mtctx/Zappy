@@ -21,4 +21,6 @@ import dev.mtctx.zappy.zpl.ZPLProvider
 object NumericZPLProvider : ZPLProvider() {
     override val id: String = "numeric"
     override val characterList = ('0'..'9').toList()
+
+    override val defaultMaxLength: Int = 3
 }
