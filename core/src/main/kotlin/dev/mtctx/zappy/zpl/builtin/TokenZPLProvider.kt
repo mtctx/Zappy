@@ -1,11 +1,11 @@
 /*
- * Zappy (Zappy.annotations.main): DataFromRegex.kt
+ * Zappy (Zappy.core.main): TokenZPLProvider.kt
  * Copyright (C) 2025 mtctx
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the **GNU General Public License** as published
  * by the Free Software Foundation, either **version 3** of the License, or
  * (at your option) any later version.
- *  
+ *
  * This program is distributed WITHOUT ANY WARRANTY; see the
  * GNU General Public License for more details, which you should have
  * received with this program.
@@ -14,13 +14,12 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-package mtctx.zappy
+package dev.mtctx.zappy.zpl.builtin
 
-import com.github.curiousoddman.rgxgen.RgxGen
+import dev.mtctx.zappy.zpl.ZPLProvider
 
-fun generateFromRegexPattern(pattern: String): String {
-    val rgxgen = RgxGen.parse(pattern)
-    return rgxgen.generate()
+object TokenZPLProvider : ZPLProvider() {
+    override val id: String = "token"
+    override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf('-', '_', '=')
+    override val defaultMinLength: Int = 20
 }
-
-fun generateFromRegex(regex: Regex) = generateFromRegexPattern(regex.pattern)

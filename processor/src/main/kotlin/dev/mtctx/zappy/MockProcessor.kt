@@ -13,8 +13,9 @@
  * SPDX-FileCopyrightText: 2025 mtctx
  * SPDX-License-Identifier: GPL-3.0-only
  */
+@file:Suppress("Unused")
 
-package mtctx.zappy
+package dev.mtctx.zappy
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
@@ -22,34 +23,44 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ksp.writeTo
-import mtctx.zappy.annotation.*
+import dev.mtctx.zappy.annotation.*
+import dev.mtctx.zappy.zpl.ZPLProvider
+import dev.mtctx.zappy.zpl.defaultZPLProviders
 import kotlin.reflect.KClass
 
 internal val annotationClasses = mutableSetOf(
-    WithRegex::class,
-    Username::class,
-    Numeric::class,
+    Custom::class,
+    Domain::class,
     Email::class,
-    Token::class,
-    UUID::class,
-    URL::class,
-    Password::class,
     ISODate::class,
-    Slug::class,
-    PhoneNumber::class
+    Name::class,
+    Numeric::class,
+    Password::class,
+    PhoneNumber::class,
+    Token::class,
+    URL::class,
+    UUID::class,
 )
 
 internal val externalAnnotationClassNames = mutableSetOf<String>()
 
-internal val annotationClassNames
-    get() = mutableSetOf<String>().apply {
-        addAll(annotationClasses.map { it.qualifiedName!! })
-        addAll(externalAnnotationClassNames)
-    }.toSet()
+internal val annotationClassNames: Set<String>
+    get() = annotationClasses.mapNotNull { it.qualifiedName }.toSet() + externalAnnotationClassNames
 
 fun registerNewZappyAnnotation(clazz: Iterable<KClass<out Annotation>>) = annotationClasses.addAll(clazz)
 fun registerNewZappyAnnotation(clazz: KClass<out Annotation>) = annotationClasses.add(clazz)
 fun registerNewZappyAnnotation(vararg classes: KClass<out Annotation>) = annotationClasses.addAll(classes)
+
+internal val zplProviders = mutableMapOf<String, ZPLProvider>().also {
+    it.putAll(defaultZPLProviders)
+}
+
+fun registerNewZPLProvider(provider: ZPLProvider) = zplProviders.put(provider.id, provider)
+fun registerNewZPLProvider(vararg providers: ZPLProvider) = zplProviders.putAll(providers.associateBy { it.id })
+fun registerNewZPLProvider(providerEntry: Pair<String, ZPLProvider>) =
+    zplProviders.put(providerEntry.first, providerEntry.second)
+
+fun registerNewZPLProvider(vararg providerEntries: Pair<String, ZPLProvider>) = zplProviders.putAll(providerEntries)
 
 internal var errorOccurred = false
 

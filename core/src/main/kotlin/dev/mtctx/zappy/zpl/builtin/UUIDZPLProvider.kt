@@ -1,5 +1,5 @@
 /*
- * Zappy (Zappy.annotations): build.gradle.kts
+ * Zappy (Zappy.core.main): UUIDZPLProvider.kt
  * Copyright (C) 2025 mtctx
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the **GNU General Public License** as published
@@ -14,25 +14,16 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-plugins {
-    kotlin("jvm")
-}
+package dev.mtctx.zappy.zpl.builtin
 
-group = "dev.mtctx.library"
-version = "1.0.0"
+import dev.mtctx.zappy.zpl.ZPLProvider
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-repositories {
-    mavenCentral()
-}
+object UUIDZPLProvider : ZPLProvider() {
+    override val id: String = "uuid"
+    override val characterList = emptyList<Char>()
 
-dependencies {
-    implementation("com.github.curious-odd-man:rgxgen:3.1")
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
+    @OptIn(ExperimentalUuidApi::class)
+    override fun generate(minLength: Int, maxLength: Int): String = Uuid.random().toString()
 }

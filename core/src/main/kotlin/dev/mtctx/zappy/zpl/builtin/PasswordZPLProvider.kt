@@ -1,5 +1,5 @@
 /*
- * Zappy (Zappy.test.main): Test.kt
+ * Zappy (Zappy.core.main): PasswordZPLProvider.kt
  * Copyright (C) 2025 mtctx
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the **GNU General Public License** as published
@@ -14,12 +14,14 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-package mtctx.zappy.test
+package dev.mtctx.zappy.zpl.builtin
 
-import mtctx.zappy.annotation.Mock
-import mtctx.zappy.annotation.Username
+import dev.mtctx.zappy.zpl.ZPLProvider
 
-@Mock
-data class Test(
-    @Username val username: String,
-)
+object PasswordZPLProvider : ZPLProvider() {
+    override val id: String = "password"
+    override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf(
+        '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '+', '=', '{', '}',
+        '[', ']', '|', '\\', ':', ';', '\'', '"', '<', '>', ',', '.', '?', '/', '_'
+    )
+}

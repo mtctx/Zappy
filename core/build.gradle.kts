@@ -1,5 +1,5 @@
 /*
- * Zappy (Zappy.test): build.gradle.kts
+ * Zappy (Zappy.core): build.gradle.kts
  * Copyright (C) 2025 mtctx
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the **GNU General Public License** as published
@@ -16,19 +16,17 @@
 
 plugins {
     kotlin("jvm")
-    id("com.google.devtools.ksp")
 }
 
 group = "dev.mtctx.library"
-version = "unspecified"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation(project(":core"))
-    ksp(project(":processor"))
+    implementation("dev.mtctx.library:utilities:1.6.0")
     testImplementation(kotlin("test"))
 }
 

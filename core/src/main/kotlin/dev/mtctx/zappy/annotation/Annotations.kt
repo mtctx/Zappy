@@ -1,5 +1,5 @@
 /*
- * Zappy (Zappy.annotations.main): Annotations.kt
+ * Zappy (Zappy.core.main): Annotations.kt
  * Copyright (C) 2025 mtctx
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the **GNU General Public License** as published
@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-package mtctx.zappy.annotation
+package dev.mtctx.zappy.annotation
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
@@ -24,48 +24,48 @@ annotation class Mock
 @Retention(AnnotationRetention.SOURCE)
 annotation class ZappyAnnotation
 
-// REGEX ANNOTATIONS
+// ZPL ANNOTATIONS
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class WithRegex(val regex: String)
+annotation class Custom(val zpl: String)
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Username(val regex: String = DEFAULT_REGEX_USERNAME)
+annotation class Name(val zpl: String = DEFAULT_ZPL_NAME)
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Numeric(val regex: String = DEFAULT_REGEX_NUMERIC)
+annotation class Numeric(val zpl: String = DEFAULT_ZPL_NUMERIC)
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Email(val regex: String = DEFAULT_REGEX_EMAIL)
+annotation class Email(val zpl: String = DEFAULT_ZPL_EMAIL)
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Password(val regex: String = DEFAULT_REGEX_PASSWORD)
+annotation class Password(val zpl: String = DEFAULT_ZPL_PASSWORD)
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Token(val regex: String = DEFAULT_REGEX_TOKEN)
+annotation class Token(val zpl: String = DEFAULT_ZPL_TOKEN)
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class UUID(val regex: String = DEFAULT_REGEX_UUID)
+annotation class UUID(val zpl: String = DEFAULT_ZPL_UUID)
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class ISODate(val regex: String = DEFAULT_REGEX_ISO_DATE)
+annotation class ISODate(val zpl: String = DEFAULT_ZPL_ISO_DATE)
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Slug(val regex: String = DEFAULT_REGEX_SLUG)
+annotation class Domain(val zpl: String = DEFAULT_ZPL_DOMAIN)
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class PhoneNumber(val regex: String = DEFAULT_REGEX_PHONE_NUMBER)
+annotation class PhoneNumber(val zpl: String = DEFAULT_ZPL_PHONE_NUMBER)
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class URL(val regex: String = DEFAULT_REGEX_URL)
+annotation class URL(val zpl: String = DEFAULT_ZPL_URL)

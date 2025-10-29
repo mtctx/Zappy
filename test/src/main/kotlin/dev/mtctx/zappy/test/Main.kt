@@ -1,5 +1,5 @@
 /*
- * Zappy (Zappy.test): build.gradle.kts
+ * Zappy (Zappy.test.main): Main.kt
  * Copyright (C) 2025 mtctx
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the **GNU General Public License** as published
@@ -14,27 +14,11 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-plugins {
-    kotlin("jvm")
-    id("com.google.devtools.ksp")
-}
+package dev.mtctx.zappy.test
 
-group = "dev.mtctx.library"
-version = "unspecified"
+import dev.mtctx.zappy.mock
 
-repositories {
-    mavenCentral()
-}
 
-dependencies {
-    implementation(project(":core"))
-    ksp(project(":processor"))
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(21)
+fun main() {
+    println(mock<Test>())
 }

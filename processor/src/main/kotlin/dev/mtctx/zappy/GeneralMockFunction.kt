@@ -14,7 +14,7 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-package mtctx.zappy
+package dev.mtctx.zappy
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
@@ -53,11 +53,12 @@ fun buildGeneralMockFunctionAndReturnFileSpec(
             add($$"else -> throw IllegalArgumentException(\"${T::class.simpleName} is not annotated with @Mock!\")\n")
             add("}\n")
         })
-        .addKdoc("Generates a mock of the given type. Throws an exception if the type is not annotated with [mtctx.zappy.annotation.Mock].")
+        .addKdoc("Generates a mock of the given type. Throws an exception if the type is not annotated with [dev.mtctx.zappy.annotation.Mock].")
         .build()
 
-    return FileSpec.builder("mtctx.zappy", "MockProviders")
+    return FileSpec.builder("dev.mtctx.zappy", "MockProviders")
         .addFunction(funSpec)
         .addFunctions(funSpecs)
+        .addImport("dev.mtctx.zappy.zpl", "generateWithZPL")
         .build().also { logger.info("Generated general mock function!") }
 }

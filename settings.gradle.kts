@@ -24,6 +24,6 @@ pluginManagement {
 
 rootProject.name = "Zappy"
 
-include("annotations")
+include("core")
 include("processor")
 include("test")

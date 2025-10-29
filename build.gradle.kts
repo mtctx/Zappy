@@ -34,7 +34,7 @@ subprojects {
 }
 
 dependencies {
-    dokka(project(":annotations"))
+    dokka(project(":core"))
     dokka(project(":processor"))
 }
 

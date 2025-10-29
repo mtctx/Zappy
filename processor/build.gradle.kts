@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":annotations"))
+    implementation(project(":core"))
     implementation("com.squareup:kotlinpoet:2.2.0")
     implementation("com.squareup:kotlinpoet-ksp:2.2.0")
     implementation(libs.kspSymbolProcessingApi)

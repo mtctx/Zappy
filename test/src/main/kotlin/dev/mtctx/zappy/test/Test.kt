@@ -1,5 +1,5 @@
 /*
- * Zappy (Zappy.test.main): Main.kt
+ * Zappy (Zappy.test.main): Test.kt
  * Copyright (C) 2025 mtctx
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the **GNU General Public License** as published
@@ -14,10 +14,12 @@
  * SPDX-License-Identifier: GPL-3.0-only
  */
 
-package mtctx.zappy.test
+package dev.mtctx.zappy.test
 
-import mtctx.zappy.mock
+import dev.mtctx.zappy.annotation.Email
+import dev.mtctx.zappy.annotation.Mock
 
-fun main() {
-    println(mock<Test>())
-}
+@Mock
+data class Test(
+    @Email val string: String,
+)
