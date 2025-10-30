@@ -11,8 +11,8 @@ We only provide **security updates for the latest release**.
 
 | Version   | Security Support |
 |-----------|------------------|
-| `1.0.0`   | Supported        |
-| `< 1.0.0` | Not supported    |
+| `1.1.0`   | Supported        |
+| `< 1.1.0` | Not supported    |
 
 **Always upgrade to the latest version** to stay protected.
 
