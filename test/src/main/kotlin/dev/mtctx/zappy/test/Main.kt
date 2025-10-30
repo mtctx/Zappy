@@ -25,6 +25,11 @@ object TestZplProvider : ZPLProvider() {
     override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf('-', '_', '=')
 }
 
+object Test2ZplProvider : ZPLProvider() {
+    override val id: String = "test2"
+    override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf('-', '_', '=')
+}
+
 @ZappyAnnotation
 annotation class TestAnno(val zpl: String = "<test>")
 
@@ -56,6 +61,8 @@ data class Test(
     @URL val url: String,
 )
 
+val providers = arrayOf(TestZplProvider, Test2ZplProvider)
+
 fun main() {
-    println(mock<Test>(TestZplProvider))
+    println(mock<Test>(*providers))
 }

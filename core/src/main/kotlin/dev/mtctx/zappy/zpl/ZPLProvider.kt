@@ -53,8 +53,7 @@ val defaultZPLProviders = mapOf(
     UUIDZPLProvider.mapEntry(),
 )
 
-fun String.generateWithZPL(vararg customProviders: ZPLProvider = emptyArray()): String {
-    val providers = (defaultZPLProviders + customProviders.associateBy { it.id }).mapKeys { it.key.lowercase() }
+fun String.generateWithZPLWithProviders(providers: Map<String, ZPLProvider> = emptyMap()): String {
     val regex = "<([^:]+)(?::([0-9]+)-([0-9]+)|:([0-9]+)|:-([0-9]+))?>".toRegex()
 
     return regex.replace(this) { match ->
@@ -74,3 +73,6 @@ fun String.generateWithZPL(vararg customProviders: ZPLProvider = emptyArray()): 
         }
     }
 }
+
+fun String.generateWithZPL(customProviders: Collection<ZPLProvider> = emptyList()) =
+    generateWithZPLWithProviders((defaultZPLProviders + customProviders.associateBy { it.id }).mapKeys { it.key.lowercase() })

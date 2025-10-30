@@ -47,7 +47,7 @@ No boilerplate. No reflection. No runtime cost.
 
 ## Installation
 
-Zappy will be published to **Maven Central** at `v1.0.0`.
+Zappy is published to **Maven Central**.
 
 ### Gradle (Kotlin DSL)
 
@@ -127,9 +127,6 @@ annotation class FullName(val zpl: String = "<username>_<numeric:1-99>")
 data class Person(
     @FullName val fullName: String
 )
-
-// register it at startup (e.g. in main or Application class)
-dev.mtctx.zappy.processor.registerNewZPLAnnotation(FullName::class)
 ```
 
 > `@ZappyAnnotation` enables KSP processing.  
@@ -150,10 +147,8 @@ object CreditCardZPLProvider : ZPLProvider() {
     }
 }
 
-// Register at startup (e.g. in main or Application class)
-dev.mtctx.zappy.processor.registerNewZPLProvider(CreditCardZPLProvider)
-// or
-dev.mtctx.zappy.processor.registerNewZPLProvider(CreditCardZPLProvider.mapEntry())
+// Register when using mock (e.g., in main or Application class)
+mock<Person>(CreditCardZPLProvider)
 ```
 
 Now use: `<credit-card:19>` → `"1234-5678-9012-3456"`

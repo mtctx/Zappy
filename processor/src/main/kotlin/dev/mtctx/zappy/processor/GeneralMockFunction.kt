@@ -19,6 +19,8 @@ package dev.mtctx.zappy.processor
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import dev.mtctx.zappy.zpl.ZPLProvider
 
 fun buildGeneralMockFunctionAndReturnFileSpec(
     logger: KSPLogger,
@@ -29,25 +31,41 @@ fun buildGeneralMockFunctionAndReturnFileSpec(
 
     val typeVariable = TypeVariableName("T", ANY).copy(reified = true)
 
+    val varargFunSpec = FunSpec.builder("mock")
+        .addAnnotation(AnnotationSpec.builder(Throws::class).addMember("IllegalArgumentException::class").build())
+        .addModifiers(KModifier.INLINE)
+        .addTypeVariable(typeVariable)
+        .addParameter(
+            ParameterSpec.builder(
+                "customProviders",
+                ZPLProvider::class.asClassName(),
+                KModifier.VARARG
+            ).defaultValue(CodeBlock.of("emptyArray()")).build()
+        )
+        .returns(typeVariable)
+        .addCode(buildCodeBlock {
+            add("return mock<T>(customProviders.toList())")
+        })
+        .addKdoc("Generates a mock of the given type. Throws an exception if the type is not annotated with [dev.mtctx.zappy.annotation.Mock].")
+        .build()
+
     val funSpec = FunSpec.builder("mock")
         .addAnnotation(AnnotationSpec.builder(Throws::class).addMember("IllegalArgumentException::class").build())
         .addModifiers(KModifier.INLINE)
         .addTypeVariable(typeVariable)
+        .addParameter(
+            ParameterSpec.builder(
+                "customProviders",
+                Collection::class.asClassName().parameterizedBy(ZPLProvider::class.asClassName()),
+            ).defaultValue(CodeBlock.of("emptyList()")).build()
+        )
         .returns(typeVariable)
         .addCode(buildCodeBlock {
-            /**
-             * @Throws(IllegalArgumentException::class)
-             * inline fun <reified T> function(): T = when (T::class) {
-             *     CoolData::class -> Cool.function() as T
-             *     else -> throw IllegalArgumentException("${T::class.simpleName} is not annotated with @Mock!")
-             * }
-             */
-
             add("return when (T::class) {\n")
             classes.map { it.qualifiedName!!.asString() }
                 .forEach { qualifiedName ->
                     add(
-                        "${qualifiedName}::class -> mock_${formatQualifiedName(qualifiedName)}_Class() as T\n"
+                        "${qualifiedName}::class -> mock_${formatQualifiedName(qualifiedName)}_Class(customProviders) as T\n"
                     )
                 }
             add($$"else -> throw IllegalArgumentException(\"${T::class.simpleName} is not annotated with @Mock!\")\n")
@@ -57,6 +75,7 @@ fun buildGeneralMockFunctionAndReturnFileSpec(
         .build()
 
     return FileSpec.builder("dev.mtctx.zappy", "MockProviders")
+        .addFunction(varargFunSpec)
         .addFunction(funSpec)
         .addFunctions(funSpecs)
         .addImport("dev.mtctx.zappy.zpl", "generateWithZPL")
