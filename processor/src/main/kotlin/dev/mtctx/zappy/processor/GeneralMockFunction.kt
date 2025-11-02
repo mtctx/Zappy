@@ -25,7 +25,7 @@ import dev.mtctx.zappy.zpl.ZPLProvider
 fun buildGeneralMockFunctionAndReturnFileSpec(
     logger: KSPLogger,
     classes: List<KSClassDeclaration>,
-    funSpecs: List<FunSpec>
+    funSpecsAndOptInMarkers: List<FunSpecAndOptInMarkers>
 ): FileSpec {
     logger.info("Generating general mock function...")
 
@@ -38,7 +38,7 @@ fun buildGeneralMockFunctionAndReturnFileSpec(
         .addParameter(
             ParameterSpec.builder(
                 "customProviders",
-                ZPLProvider::class.asClassName(),
+                ZPLProvider::class.asClassName().parameterizedBy(STAR),
                 KModifier.VARARG
             ).defaultValue(CodeBlock.of("emptyArray()")).build()
         )
@@ -56,7 +56,7 @@ fun buildGeneralMockFunctionAndReturnFileSpec(
         .addParameter(
             ParameterSpec.builder(
                 "customProviders",
-                Collection::class.asClassName().parameterizedBy(ZPLProvider::class.asClassName()),
+                Collection::class.asClassName().parameterizedBy(ZPLProvider::class.asClassName().parameterizedBy(STAR)),
             ).defaultValue(CodeBlock.of("emptyList()")).build()
         )
         .returns(typeVariable)
@@ -74,7 +74,18 @@ fun buildGeneralMockFunctionAndReturnFileSpec(
         .addKdoc("Generates a mock of the given type. Throws an exception if the type is not annotated with [dev.mtctx.zappy.annotation.Mock].")
         .build()
 
-    return FileSpec.builder("dev.mtctx.zappy", "MockProviders")
+    val fileSpecBuilder = FileSpec.builder("dev.mtctx.zappy", "MockProviders")
+
+    val funSpecs = funSpecsAndOptInMarkers.map { it.funSpec }
+    val optInMarkers: Set<String> = funSpecsAndOptInMarkers.flatMap { it.optInMarkers }.toSet()
+    if (optInMarkers.isNotEmpty()) {
+        val optInAnnotation = AnnotationSpec.builder(ClassName("kotlin", "OptIn"))
+            .addMember(optInMarkers.joinToString(","))
+            .useSiteTarget(AnnotationSpec.UseSiteTarget.FILE).build()
+        fileSpecBuilder.addAnnotation(optInAnnotation)
+    }
+
+    return fileSpecBuilder
         .addFunction(varargFunSpec)
         .addFunction(funSpec)
         .addFunctions(funSpecs)

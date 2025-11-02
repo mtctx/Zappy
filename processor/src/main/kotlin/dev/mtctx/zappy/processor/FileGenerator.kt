@@ -26,10 +26,12 @@ import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import dev.mtctx.zappy.zpl.ZPLProvider
 
+data class FunSpecAndOptInMarkers(val funSpec: FunSpec, val optInMarkers: Set<String>)
+
 fun KSClassDeclaration.processAndReturnFunSpec(
     logger: KSPLogger,
     sourceFile: KSFile
-): Pair<FunSpec?, String> {
+): Pair<FunSpecAndOptInMarkers?, String> {
     if (isLocal() || Modifier.PRIVATE in modifiers) {
         logger.warn(
             "Skipping non-public (local or private) class $qualifiedName » cannot generate top-level mock",
@@ -44,6 +46,15 @@ fun KSClassDeclaration.processAndReturnFunSpec(
 
     logger.info("Processing mock class: $packageName.$className")
 
+    val optInMarkerClassNames = mutableSetOf<String>()
+    this.annotations.flatMapTo(optInMarkerClassNames) { it.toOptInMarkerClassNames() }
+    this.primaryConstructor?.apply {
+        annotations.flatMapTo(optInMarkerClassNames) { it.toOptInMarkerClassNames() }
+        parameters.forEach { param ->
+            param.annotations.flatMapTo(optInMarkerClassNames) { it.toOptInMarkerClassNames() }
+        }
+    }
+
     val companionKClass = declarations.filterIsInstance<KSClassDeclaration>().find { it.isCompanionObject }
     val companionKClassHasMockFunction =
         companionKClass?.declarations?.any { it is KSFunctionDeclaration && it.simpleName.asString() == "mock" } == true
@@ -52,7 +63,7 @@ fun KSClassDeclaration.processAndReturnFunSpec(
         .addParameter(
             ParameterSpec.builder(
                 "customProviders",
-                Collection::class.asClassName().parameterizedBy(ZPLProvider::class.asClassName()),
+                Collection::class.asClassName().parameterizedBy(ZPLProvider::class.asClassName().parameterizedBy(STAR)),
             ).defaultValue(CodeBlock.of("emptyList()")).build()
         )
         .returns(classTypeName)
@@ -74,25 +85,25 @@ fun KSClassDeclaration.processAndReturnFunSpec(
             add(")")
         })
     }
-
-    return funSpec.build() to ""
+    return FunSpecAndOptInMarkers(funSpec.build(), optInMarkerClassNames) to ""
 }
 
 private fun KSValueParameter.generateMockValueCode(logger: KSPLogger): CodeBlock {
+    val type = type.resolve().toTypeName().toString()
     val customAnnotation = annotations.find { it.shortName.asString() == "Custom" }
     if (customAnnotation != null) {
         val pattern = customAnnotation.arguments.first { it.name?.asString() == "zpl" }.value as String
-        return CodeBlock.of("%S.generateWithZPL(customProviders)", pattern)
+        return CodeBlock.of("%S.generateWithZPL<$type>(customProviders)", pattern)
     }
 
     val specificAnnotation =
         annotations.find { it.annotationType.resolve().declaration.qualifiedName?.asString() in annotationClassNames }
     if (specificAnnotation != null) {
         val zpl = specificAnnotation.arguments.first { it.name?.asString() == "zpl" }.value as String
-        return CodeBlock.of("%S.generateWithZPL(customProviders)", zpl)
+        return CodeBlock.of("%S.generateWithZPL<$type>(customProviders)", zpl)
     }
 
-    return when (type.resolve().toTypeName().toString()) {
+    return when (type) {
         "kotlin.String" -> CodeBlock.of("%S", "mock-${name?.asString()}")
         "kotlin.Int" -> CodeBlock.of("(0..100).random()")
         "kotlin.Long" -> CodeBlock.of("System.currentTimeMillis()")
@@ -100,8 +111,22 @@ private fun KSValueParameter.generateMockValueCode(logger: KSPLogger): CodeBlock
         "kotlin.Double" -> CodeBlock.of("1.0")
         "kotlin.Float" -> CodeBlock.of("1.0f")
         else -> {
-            logger.warn("Unsupported type ${type.resolve().toTypeName()} for ${name?.asString()}")
+            logger.warn("Unsupported type $type for ${name?.asString()}")
             CodeBlock.of("%S", "mock-${name?.asString()}")
         }
     }
+}
+
+private fun KSAnnotation.toOptInMarkerClassNames(): List<String> {
+    if (this.annotationType.resolve().declaration.qualifiedName?.asString() != "kotlin.OptIn") {
+        return emptyList()
+    }
+
+    val classArguments = this.arguments.firstOrNull { it.name?.asString() == "markerClass" }?.value as? List<*>
+
+    return classArguments
+        ?.filterIsInstance<KSType>()
+        ?.mapNotNull { it.declaration.qualifiedName?.asString() }
+        ?.map { "$it::class" }
+        ?: emptyList()
 }

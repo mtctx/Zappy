@@ -19,10 +19,12 @@ package dev.mtctx.zappy.zpl.builtin
 import dev.mtctx.zappy.zpl.ZPLProvider
 import mtctx.utilities.Ignore
 import mtctx.utilities.IgnoreReason
+import kotlin.reflect.KClass
 
-object URLZPLProvider : ZPLProvider() {
+object URLZPLProvider : ZPLProvider<String>() {
     override val id: String = "url"
     override val characterList = emptyList<Char>()
+    override val returnType: KClass<String> = String::class
 
     override fun generate(
         @Ignore(IgnoreReason.NOT_IMPLEMENTED) minLength: Int,

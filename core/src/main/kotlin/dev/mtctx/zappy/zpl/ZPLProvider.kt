@@ -17,48 +17,77 @@
 package dev.mtctx.zappy.zpl
 
 import dev.mtctx.zappy.zpl.builtin.*
+import kotlin.reflect.KClass
+import kotlin.uuid.ExperimentalUuidApi
 
 /**
  * ZPL stands for Zappy Pattern Language
  */
-abstract class ZPLProvider {
+abstract class ZPLProvider<R : Any> {
     abstract val id: String
     abstract val characterList: Collection<Char>
+    abstract val returnType: KClass<R>
 
     open val defaultMinLength: Int = 1
     open val defaultMaxLength: Int = 20
 
-    open fun generate(minLength: Int = defaultMinLength, maxLength: Int = defaultMaxLength): String {
+    open fun generate(minLength: Int = defaultMinLength, maxLength: Int = defaultMaxLength): R {
         require(minLength <= maxLength) { "minLength must be less than maxLength." }
 
-        return length(minLength, maxLength)
-            .map { characterList.random() }
-            .joinToString("")
+        return toType(
+            length(minLength, maxLength)
+                .map { characterList.random() }
+                .joinToString("")
+        )
     }
 
-    protected fun length(minLength: Int, maxLength: Int): IntRange = minLength..((minLength..maxLength).random())
+    open fun toType(generated: String): R = generalToType(generated, returnType)
 
-    fun mapEntry(): Pair<String, ZPLProvider> = id to this
+    protected fun length(minLength: Int, maxLength: Int): IntRange = minLength..((minLength..maxLength).random())
 }
 
-val defaultZPLProviders = mapOf(
-    DomainZPLProvider.mapEntry(),
-    EmailZPLProvider.mapEntry(),
-    NameZPLProvider.mapEntry(),
-    NumericZPLProvider.mapEntry(),
-    PasswordZPLProvider.mapEntry(),
-    PhoneNumberZPLProvider.mapEntry(),
-    TokenZPLProvider.mapEntry(),
-    URLZPLProvider.mapEntry(),
-    UUIDZPLProvider.mapEntry(),
+@Suppress("UNCHECKED_CAST")
+fun <R : Any> generalToType(input: String, returnType: KClass<R>): R {
+    return when (returnType) {
+        String::class -> input as R
+        Int::class -> input.toInt() as R
+        Long::class -> input.toLong() as R
+        Boolean::class -> input.toBoolean() as R
+        Double::class -> input.toDouble() as R
+        Float::class -> input.toFloat() as R
+        Char::class -> input.single() as R
+        Short::class -> input.toShort() as R
+        UShort::class -> input.toUShort() as R
+        UInt::class -> input.toUInt() as R
+        ULong::class -> input.toULong() as R
+        UByte::class -> input.toUByte() as R
+        else -> input as R
+    }
+}
+
+@OptIn(ExperimentalUuidApi::class)
+val defaultZPLProviders = setOf(
+    DomainZPLProvider,
+    EmailZPLProvider,
+    NameZPLProvider,
+    NumericZPLProvider,
+    PasswordZPLProvider,
+    PhoneNumberZPLProvider,
+    TokenZPLProvider,
+    URLZPLProvider,
+    UUIDZPLProvider,
 )
 
-fun String.generateWithZPLWithProviders(providers: Map<String, ZPLProvider> = emptyMap()): String {
+inline fun <reified R : Any> String.generateWithZPL(customProviders: Collection<ZPLProvider<*>> = emptyList()): R {
+    val providers = defaultZPLProviders + customProviders
+    val providerMap = providers.associateBy { it.id.lowercase() }
+
     val regex = "<([^:]+)(?::([0-9]+)-([0-9]+)|:([0-9]+)|:-([0-9]+))?>".toRegex()
 
-    return regex.replace(this) { match ->
-        val id = match.groups[1]?.value?.lowercase() ?: return@replace match.value
-        val provider = providers[id] ?: return@replace match.value
+    val replaced = regex.replace(this) { match ->
+        val tagId = match.groups[1]?.value?.lowercase() ?: return@replace match.value
+
+        val provider = providerMap[tagId] ?: return@replace match.value
 
         val rangeMin = match.groups[2]?.value?.toIntOrNull()
         val rangeMax = match.groups[3]?.value?.toIntOrNull()
@@ -66,13 +95,12 @@ fun String.generateWithZPLWithProviders(providers: Map<String, ZPLProvider> = em
         val maxOnly = match.groups[5]?.value?.toIntOrNull()
 
         when {
-            rangeMin != null && rangeMax != null -> provider.generate(rangeMin, rangeMax) // Exact range (:X-Y)
-            minOnly != null -> provider.generate(minLength = minOnly) // Min X, Max 20
-            maxOnly != null -> provider.generate(maxLength = maxOnly) // Min 1, Max Y
-            else -> provider.generate() // Min 1, Max 20 (default, but depends on provider)
-        }
+            rangeMin != null && rangeMax != null -> provider.generate(rangeMin, rangeMax) // <tag:X-Y>
+            minOnly != null -> provider.generate(minLength = minOnly) // <tag:X>
+            maxOnly != null -> provider.generate(maxLength = maxOnly) // <tag:-Y>
+            else -> provider.generate() // <tag>
+        }.toString()
     }
-}
 
-fun String.generateWithZPL(customProviders: Collection<ZPLProvider> = emptyList()) =
-    generateWithZPLWithProviders((defaultZPLProviders + customProviders.associateBy { it.id }).mapKeys { it.key.lowercase() })
+    return generalToType(replaced, R::class)
+}

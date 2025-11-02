@@ -17,10 +17,12 @@
 package dev.mtctx.zappy.zpl.builtin
 
 import dev.mtctx.zappy.zpl.ZPLProvider
+import kotlin.reflect.KClass
 
-object TokenZPLProvider : ZPLProvider() {
+object TokenZPLProvider : ZPLProvider<String>() {
     override val id: String = "token"
     override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf('-', '_', '=')
+    override val returnType: KClass<String> = String::class
 
     override val defaultMinLength: Int = 12
     override val defaultMaxLength: Int = 36

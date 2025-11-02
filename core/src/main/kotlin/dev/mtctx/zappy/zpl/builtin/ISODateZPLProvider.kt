@@ -20,12 +20,14 @@ import dev.mtctx.zappy.zpl.ZPLDateProvider
 import dev.mtctx.zappy.zpl.ZPLProvider
 import mtctx.utilities.Ignore
 import mtctx.utilities.IgnoreReason
+import kotlin.reflect.KClass
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class ISODateZPLProvider(val dateProvider: ZPLDateProvider) : ZPLProvider() {
+class ISODateZPLProvider(val dateProvider: ZPLDateProvider) : ZPLProvider<String>() {
     override val id: String = "iso-date"
     override val characterList = emptyList<Char>()
+    override val returnType: KClass<String> = String::class
 
     override fun generate(
         @Ignore(IgnoreReason.NOT_IMPLEMENTED) minLength: Int,

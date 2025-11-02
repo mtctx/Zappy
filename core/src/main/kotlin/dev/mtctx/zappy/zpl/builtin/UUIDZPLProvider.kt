@@ -17,13 +17,18 @@
 package dev.mtctx.zappy.zpl.builtin
 
 import dev.mtctx.zappy.zpl.ZPLProvider
+import kotlin.reflect.KClass
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-object UUIDZPLProvider : ZPLProvider() {
+@OptIn(ExperimentalUuidApi::class)
+object UUIDZPLProvider : ZPLProvider<Uuid>() {
     override val id: String = "uuid"
     override val characterList = emptyList<Char>()
+    override val returnType: KClass<Uuid> = Uuid::class
 
     @OptIn(ExperimentalUuidApi::class)
-    override fun generate(minLength: Int, maxLength: Int): String = Uuid.random().toString()
+    override fun generate(minLength: Int, maxLength: Int): Uuid = Uuid.random()
+
+    override fun toType(generated: String): Uuid = Uuid.fromByteArray(generated.encodeToByteArray())
 }

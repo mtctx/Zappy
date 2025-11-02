@@ -19,10 +19,12 @@ package dev.mtctx.zappy.zpl.builtin
 import dev.mtctx.zappy.zpl.ZPLProvider
 import mtctx.utilities.Ignore
 import mtctx.utilities.IgnoreReason
+import kotlin.reflect.KClass
 
-object PhoneNumberZPLProvider : ZPLProvider() {
+object PhoneNumberZPLProvider : ZPLProvider<String>() {
     override val id: String = "phone-number"
     override val characterList = ('0'..'9').toList()
+    override val returnType: KClass<String> = String::class
 
     override fun generate(
         @Ignore(IgnoreReason.NOT_IMPLEMENTED) minLength: Int,

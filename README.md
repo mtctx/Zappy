@@ -1,12 +1,12 @@
 # Zappy – Declarative Mock Data for Kotlin
 
-[![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.21-blue.svg)](https://kotlinlang.org)
-[![KSP](https://img.shields.io/badge/KSP-2.3.0-orange.svg)](https://github.com/google/ksp)
-[![Maven Central Core](https://img.shields.io/maven-central/v/dev.mtctx.library/zappy-core?label=Maven%20Central%20Core)](https://central.sonatype.com/artifact/dev.mtctx.library/zappy-core)
-[![Maven Central Processor](https://img.shields.io/maven-central/v/dev.mtctx.library/zappy-processor?label=Maven%20Central%20Processor)](https://central.sonatype.com/artifact/dev.mtctx.library/zappy-processor)
+[](https://www.gnu.org/licenses/gpl-3.0)
+[](https://kotlinlang.org)
+[](https://github.com/google/ksp)
+[](https://central.sonatype.com/artifact/dev.mtctx.library/zappy-core)
+[](https://central.sonatype.com/artifact/dev.mtctx.library/zappy-processor)
 
----
+-----
 
 ## What is Zappy?
 
@@ -21,17 +21,17 @@ val user = mock<User>()
 
 No boilerplate. No reflection. No runtime cost.
 
----
+-----
 
 ## Modules
 
 | Module              | Description                                                                            |
-|---------------------|----------------------------------------------------------------------------------------|
+|:--------------------|:---------------------------------------------------------------------------------------|
 | **zappy-core**      | Core ZPL engine, annotations, built-in providers, and `String.generateWithZPL()`       |
 | **zappy-processor** | KSP annotation processor that generates `mock<T>()` and `mock_X_Y_Z_Class()` functions |
 | **zappy-test**      | Example usage tests                                                                    |
 
----
+-----
 
 ## Features
 
@@ -43,7 +43,7 @@ No boilerplate. No reflection. No runtime cost.
 * **Kotlin-First**: Pure Kotlin, no Java dependencies
 * **GPL-3.0 Licensed** with full SPDX compliance
 
----
+-----
 
 ## Installation
 
@@ -61,14 +61,14 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.mtctx.library:zappy-core:1.1.0")
-    ksp("dev.mtctx.library:zappy-processor:1.1.0")
+    implementation("dev.mtctx.library:zappy-core:1.2.0")
+    ksp("dev.mtctx.library:zappy-processor:1.2.0")
 }
 ```
 
 > **Important**: KSP must be applied for the processor to run.
 
----
+-----
 
 ## Example Usage
 
@@ -79,7 +79,7 @@ import dev.mtctx.zappy.mock
 data class User(
     @Name val username: String,
     @Email val email: String,
-    @Numeric(":1-2") val age: Int // 1-2 digits, e.g. 1, 2, ... 12, 35, ...
+    @Numeric(":1-2") val age: Int // Min 1, Max 2 digits, e.g. 1, 2, ... 12, 35, ...
 )
 
 fun main() {
@@ -91,7 +91,7 @@ fun main() {
 
 > Output is **fully random** — no fixed examples like "alice@example.com".
 
----
+-----
 
 ## Documentation
 
@@ -108,12 +108,10 @@ data class Profile(
 
 * Use `@Mock` on the class
 * Use ZPL annotations on fields
-* Default ZPL strings are provided (e.g. `<username>`)
+* Default ZPL strings are provided (e.g. `<name>`)
 * Call `mock<Profile>()` anywhere
 
-> **Important**: Every type has to be a String, or else the processor won't work. Will be fixed in the future.
-
----
+-----
 
 ### How to Create a Custom Annotation
 
@@ -121,7 +119,7 @@ data class Profile(
 @ZappyAnnotation
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.FIELD)
-annotation class FullName(val zpl: String = "<username>_<numeric:1-99>")
+annotation class FullName(val zpl: String = "<name>_<numeric:1-99>")
 
 @Mock
 data class Person(
@@ -129,10 +127,10 @@ data class Person(
 )
 ```
 
-> `@ZappyAnnotation` enables KSP processing.  
+> `@ZappyAnnotation` enables KSP processing.
 > Must have a `zpl: String` parameter.
 
----
+-----
 
 ### How to Create a Custom ZPLProvider
 
@@ -153,27 +151,12 @@ mock<Person>(CreditCardZPLProvider)
 
 Now use: `<credit-card:19>` → `"1234-5678-9012-3456"`
 
----
-
-### How to Use ZPL Directly
-
-```kotlin
-val pattern = "<username:5-10>@<domain>"
-val email = pattern.generateWithZPL()
-
-println(email) // → "a1b2c@example.com"
-```
-
-* Use any registered provider
-* Combine providers: `<email>`, `<uuid>`, custom ones
-* Length control: `:min-max`, `:min`, `:-max`
-
----
+-----
 
 ## Built-in ZPL Providers
 
 | ID                       | Example Output                         |
-|--------------------------|----------------------------------------|
+|:-------------------------|:---------------------------------------|
 | `<name>`                 | `k9PxM2vN`                             |
 | `<email>`                | `Bc34QQ6grdHQ0ozz@2noJRHYKqklOFZ.com`  |
 | `<domain>`               | `aa2fa5.net`                           |
@@ -181,35 +164,36 @@ println(email) // → "a1b2c@example.com"
 | `<password>`             | `e*<PyXvp]B`                           |
 | `<token>`                | `YWEeWGC3Fd4Fk-H`                      |
 | `<uuid>`                 | `f47ac10b-58cc-4372-a567-0e02b2c3d479` |
-| `<iso-date> (Base Only)` | `2025-10-29T14:30:22Z`                 |
+| `<iso-date>` (Base Only) | `2025-10-29T14:30:22Z`                 |
 | `<phone-number>`         | `+1017079879685250`                    |
 | `<url>`                  | `http://2ikEu.io`                      |
 
-> **Note**: `<iso-date>` requires a custom provider. See [Custom ZPLProvider](#how-to-create-a-custom-zplprovider).
+> **Note**: `<iso-date>` requires a custom provider (or `ZPLDateProvider` implementation) to be functional.
+> See [Custom ZPLProvider](#how-to-create-a-custom-zplprovider).
 
----
+-----
 
 ## Documentation
 
-Full API reference (Dokka):  
+Full API reference (Dokka):
 [https://zappy.apidoc.mtctx.dev](https://zappy.apidoc.mtctx.dev)
 
----
+-----
 
 ## Contributing
 
-Contributions are **very welcome**!  
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+Contributions are **very welcome**\!
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE\_OF\_CONDUCT.md](CODE_OF_CONDUCT.md).
 
----
+-----
 
 ## License
 
-Zappy is **free software** under the **GNU GPL v3**.  
+Zappy is **free software** under the **GNU GPL v3**.
 You can use, modify, and distribute it — as long as it remains free.
 
 Copyright (C) 2025 mtctx
 
----
+-----
 
 > **Zappy: Fake data, real fast.**

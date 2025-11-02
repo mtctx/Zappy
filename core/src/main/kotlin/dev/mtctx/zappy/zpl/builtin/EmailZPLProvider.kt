@@ -17,10 +17,12 @@
 package dev.mtctx.zappy.zpl.builtin
 
 import dev.mtctx.zappy.zpl.ZPLProvider
+import kotlin.reflect.KClass
 
-object EmailZPLProvider : ZPLProvider() {
+object EmailZPLProvider : ZPLProvider<String>() {
     override val id: String = "email"
     override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+    override val returnType: KClass<String> = String::class
     private val tldList = listOf("com", "net", "org", "io")
 
     override fun generate(minLength: Int, maxLength: Int): String {

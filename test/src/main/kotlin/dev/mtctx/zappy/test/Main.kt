@@ -19,15 +19,14 @@ package dev.mtctx.zappy.test
 import dev.mtctx.zappy.annotation.*
 import dev.mtctx.zappy.mock
 import dev.mtctx.zappy.zpl.ZPLProvider
+import kotlin.reflect.KClass
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-object TestZplProvider : ZPLProvider() {
+object TestZplProvider : ZPLProvider<String>() {
     override val id: String = "test"
     override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf('-', '_', '=')
-}
-
-object Test2ZplProvider : ZPLProvider() {
-    override val id: String = "test2"
-    override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf('-', '_', '=')
+    override val returnType: KClass<String> = String::class
 }
 
 @ZappyAnnotation
@@ -48,20 +47,20 @@ annotation class TestAnno(val zpl: String = "<test>")
  * | `<url>`          | `https://example.com`                  |
  */
 @Mock
-data class Test(
+data class Test @OptIn(ExperimentalUuidApi::class) constructor(
     @TestAnno val test: String,
     @Name val name: String,
     @Email val email: String,
     @Domain val domain: String,
-    @Numeric val age: String,
+    @Numeric val age: Int,
     @Password val password: String,
     @Token val token: String,
-    @UUID val uuid: String,
+    @UUID val uuid: Uuid,
     @PhoneNumber val phoneNumber: String,
     @URL val url: String,
 )
 
-val providers = arrayOf(TestZplProvider, Test2ZplProvider)
+val providers = arrayOf(TestZplProvider)
 
 fun main() {
     println(mock<Test>(*providers))

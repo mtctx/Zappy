@@ -17,13 +17,15 @@
 package dev.mtctx.zappy.zpl.builtin
 
 import dev.mtctx.zappy.zpl.ZPLProvider
+import kotlin.reflect.KClass
 
-object PasswordZPLProvider : ZPLProvider() {
+object PasswordZPLProvider : ZPLProvider<String>() {
     override val id: String = "password"
     override val characterList = ('a'..'z') + ('A'..'Z') + ('0'..'9') + listOf(
         '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '+', '=', '{', '}',
         '[', ']', '|', '\\', ':', ';', '\'', '"', '<', '>', ',', '.', '?', '/', '_'
     )
+    override val returnType: KClass<String> = String::class
 
     override val defaultMinLength: Int = 8
 }

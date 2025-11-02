@@ -21,7 +21,6 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
-import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.ksp.writeTo
 import dev.mtctx.zappy.annotation.*
 
@@ -63,7 +62,7 @@ class MockProcessor(
             .filterIsInstance<KSClassDeclaration>()
             .filter { it.validate() }
 
-        val funSpecs = mutableListOf<FunSpec>()
+        val funSpecs = mutableListOf<FunSpecAndOptInMarkers>()
         symbols.forEach { classDeclaration ->
             val (funSpec, error) = classDeclaration.processAndReturnFunSpec(logger, classDeclaration.containingFile!!)
             if (error.isNotEmpty()) {

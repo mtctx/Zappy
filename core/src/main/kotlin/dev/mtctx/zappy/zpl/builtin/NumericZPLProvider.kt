@@ -17,10 +17,12 @@
 package dev.mtctx.zappy.zpl.builtin
 
 import dev.mtctx.zappy.zpl.ZPLProvider
+import kotlin.reflect.KClass
 
-object NumericZPLProvider : ZPLProvider() {
+object NumericZPLProvider : ZPLProvider<Int>() {
     override val id: String = "numeric"
     override val characterList = ('0'..'9').toList()
+    override val returnType: KClass<Int> = Int::class
 
     override val defaultMaxLength: Int = 3
 }
